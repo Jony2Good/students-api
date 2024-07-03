@@ -1,0 +1,872 @@
+openapi: 3.0.1
+
+info:
+    version: '1.0.0'
+    title: 'Студенческое API. Тестовое задание'
+    description: 'Тестовая документация к приложению'
+    contact:
+        name: 'Сергеев А.А.'
+        email: 'sergeev.artem2013@gmail.com'
+
+servers:
+    -   url: localhost
+        description: 'Локальный сервер API'
+
+tags:
+    -   name: Students
+        description: 'Содержит методы для работы со студентами'
+
+    -   name: Lectures
+        description: 'Содержит методы для работы с лекциями'
+
+    -   name: Grades
+        description: 'Содержит методы для работы с классами'
+
+    -   name: GradeLectures
+        description: 'Содержит методы для работы с учебным планом'
+
+paths:
+    /api/students:
+        get:
+            description: 'Возвращает список студентов'
+            summary: 'Список студентов'
+            tags: [ 'Students' ]
+            responses:
+                '200':
+                    description: 'Успешная операция'
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    -   $ref: '#/components/schemas/successModel'
+                                    -   type: object
+                                        properties:
+                                            data:
+                                                $ref: '#/components/schemas/studentList'
+                '400':
+                    $ref: '#/components/responses/400BadRequest'
+                '500':
+                    $ref: '#/components/responses/500InternalServerError'
+
+    /api/students/{id}:
+        get:
+            description: 'Возвращает информацию о студенте по идентификатору'
+            summary: 'Один студент'
+            operationId: 'show'
+            tags: [ 'Students' ]
+            parameters:
+                -   name: id
+                    in: path
+                    description: 'Числовой идентификатор'
+                    required: true
+                    schema:
+                        type: integer
+                    example: 1
+            responses:
+                '200':
+                    description: 'Успешная операция'
+                    content:
+                        application/json:
+                            schema:
+                                allOf:
+                                    -   $ref: '#/components/schemas/successModel'
+                                    -   type: object
+                                        properties:
+                                            data:
+                                                $ref: '#/components/schemas/studentItem'
+                '400':
+                    $ref: '#/components/responses/400BadRequest'
+                '500':
+                    $ref: '#/components/responses/500InternalServerError'
+
+        post:
+          description: 'Создание студента'
+          summary: 'Создание одного студента'
+          operationId: 'store'
+          tags: [ 'Students' ]
+          requestBody:
+            $ref: '#/components/requestBodies/studentRequestBody'
+          responses:
+            '200':
+              description: 'Успешная операция'
+              content:
+                application/json:
+                  schema:
+                    allOf:
+                      - $ref: '#/components/schemas/successModel'
+                      - type: object
+            '400':
+              $ref: '#/components/responses/400BadRequest'
+            '500':
+              $ref: '#/components/responses/500InternalServerError'
+
+        patch:
+          description: 'Редактирование записи со студентом'
+          summary: 'Редактирование студента'
+          operationId: 'update'
+          tags: [ 'Students' ]
+          parameters:
+            - name: id
+              in: path
+              description: 'Числовой идентификатор'
+              required: true
+              schema:
+                type: integer
+              example: 1
+          requestBody:
+            $ref: '#/components/requestBodies/studentRequestBody'
+          responses:
+            '200':
+              description: 'Успешная операция'
+              content:
+                application/json:
+                  schema:
+                    allOf:
+                      - $ref: '#/components/schemas/successModel'
+                      - type: object
+            '400':
+              $ref: '#/components/responses/400BadRequest'
+            '500':
+              $ref: '#/components/responses/500InternalServerError'
+
+        delete:
+          description: 'Удаление записи о студенте'
+          summary: 'Удаление студента'
+          operationId: 'delete'
+          tags: [ 'Students' ]
+          parameters:
+            - name: id
+              in: path
+              description: 'Числовой идентификатор'
+              required: true
+              schema:
+                type: integer
+              example: 1
+          responses:
+            '200':
+              description: 'Успешная операция'
+              content:
+                application/json:
+                  schema:
+                    allOf:
+                      - $ref: '#/components/schemas/successModel'
+                      - type: object
+            '400':
+              $ref: '#/components/responses/400BadRequest'
+            '500':
+              $ref: '#/components/responses/500InternalServerError'
+
+    /api/lectures:
+      get:
+        description: 'Возвращает список лекций'
+        summary: 'Список лекций'
+        tags: [ 'Lectures' ]
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/lectureList'
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+    /api/lectures/{id}:
+      get:
+        description: 'Возвращает информацию о лекции по идентификатору'
+        summary: 'Одна лекция'
+        operationId: 'show'
+        tags: [ 'Lectures' ]
+        parameters:
+          - name: id
+            in: path
+            description: 'Числовой идентификатор'
+            required: true
+            schema:
+              type: integer
+            example: 1
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/lectureItem'
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+      post:
+        description: 'Создание лекции'
+        summary: 'Создание одной лекции'
+        operationId: 'store'
+        tags: [ 'Lectures' ]
+        requestBody:
+          $ref: '#/components/requestBodies/lectureRequestBody'
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+      patch:
+        description: 'Редактирование записи о лекции'
+        summary: 'Редактирование записи о лекции'
+        operationId: 'update'
+        tags: [ 'Lectures' ]
+        parameters:
+          - name: id
+            in: path
+            description: 'Числовой идентификатор'
+            required: true
+            schema:
+              type: integer
+            example: 1
+        requestBody:
+          $ref: '#/components/requestBodies/lectureRequestBody'
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+      delete:
+        description: 'Удаление записи о лекции'
+        summary: 'Удаление лекции'
+        operationId: 'delete'
+        tags: [ 'Lectures' ]
+        parameters:
+          - name: id
+            in: path
+            description: 'Числовой идентификатор'
+            required: true
+            schema:
+              type: integer
+            example: 1
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+    /api/grades:
+      get:
+        description: 'Возвращает список классов'
+        summary: 'Список классов'
+        tags: [ 'Grades' ]
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/gradeList'
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+    /api/grades/{id}:
+      get:
+        description: 'Возвращает информацию о классе по идентификатору'
+        summary: 'Один класс'
+        operationId: 'show'
+        tags: [ 'Grades' ]
+        parameters:
+          - name: id
+            in: path
+            description: 'Числовой идентификатор'
+            required: true
+            schema:
+              type: integer
+            example: 1
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/gradeItem'
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+      post:
+        description: 'Создание класс'
+        summary: 'Создание одного класса'
+        operationId: 'store'
+        tags: [ 'Grades' ]
+        requestBody:
+          $ref: '#/components/requestBodies/gradeRequestBody'
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+      patch:
+        description: 'Редактирование записи о классе'
+        summary: 'Редактирование записи о классе'
+        operationId: 'update'
+        tags: [ 'Grades' ]
+        parameters:
+          - name: id
+            in: path
+            description: 'Числовой идентификатор'
+            required: true
+            schema:
+              type: integer
+            example: 1
+        requestBody:
+          $ref: '#/components/requestBodies/gradeRequestBody'
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+      delete:
+        description: 'Удаление записи о классе'
+        summary: 'Удаление классе'
+        operationId: 'delete'
+        tags: [ 'Grades' ]
+        parameters:
+          - name: id
+            in: path
+            description: 'Числовой идентификатор'
+            required: true
+            schema:
+              type: integer
+            example: 1
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+    /api/grade_curriculums/{id}:
+      get:
+        description: 'Возвращает учебный план для класса'
+        summary: 'Возвращает учебный план'
+        tags: [ 'Grades' ]
+        parameters:
+          - name: id
+            in: path
+            description: 'Числовой идентификатор'
+            required: true
+            schema:
+              type: integer
+            example: 1
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+                      properties:
+                        data:
+                          $ref: '#/components/schemas/gradeCurriculumsList'
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+    /api/grade_lectures/{id}:
+      post:
+        description: 'Создает учебный план для класса'
+        summary: 'Создание учебного плана'
+        operationId: 'store'
+        tags: [ 'GradeLectures' ]
+        requestBody:
+          $ref: '#/components/requestBodies/gradeLectureRequestBody'
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+      patch:
+        description: 'Редактирует записи об учебном плане для класса'
+        summary: 'Редактирование записи об учбном плане'
+        operationId: 'update'
+        tags: [ 'GradeLectures' ]
+        parameters:
+          - name: id
+            in: path
+            description: 'Числовой идентификатор'
+            required: true
+            schema:
+              type: integer
+            example: 1
+        requestBody:
+          $ref: '#/components/requestBodies/gradeLecturesUpdateRequestBody'
+        responses:
+          '200':
+            description: 'Успешная операция'
+            content:
+              application/json:
+                schema:
+                  allOf:
+                    - $ref: '#/components/schemas/successModel'
+                    - type: object
+          '400':
+            $ref: '#/components/responses/400BadRequest'
+          '500':
+            $ref: '#/components/responses/500InternalServerError'
+
+components:
+    responses:
+        400BadRequest:
+            description: 'Ошибки валидации запроса'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/errorModel'
+                    example: { "success": false, "data": null, "errors": [ { "type": "Bad Request", "code": 400, "message": "Метод для работы с данным запросом не найден." } ] }
+        401Unauthorized:
+            description: 'Ошибки аутентификации/авторизации по токену<br>(токен не передан, неверный токен и т.п.)'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/errorModel'
+                    examples:
+                        undefinedToken:
+                            value: { "success": false, "data": null, "errors": [ { "type": "Undefined Token", "code": 401, "message": "Идентификационный токен не передан." } ] }
+                        invalidToken:
+                            value: { "success": false, "data": null, "errors": [ { "type": "Invalid Token", "code": 401, "message": "Переданный токен не найден, содержит неверный формат или просрочен." } ] }
+        404NotFound:
+            description: 'По данному запросу ни чего не найдено.'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/errorModel'
+                    example: { "success": false, "data": null, "errors": [ { "type": "Not Found", "code": 404, "message": "Ни одного элемента, соответствующего данному запросу не найдено." } ] }
+        422UnprocessableEntity:
+            description: 'Ошибки бизнес-логики<br>(пользователь заблокирован, товар не найден или недоступен, пустая корзина заказа и т.п.)'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/errorModel'
+                    example: { "success": false, "data": null, "errors": [ { "type": "Unprocessable Entity", "code": 422, "message": "Пользователь заблокирован." } ] }
+        500InternalServerError:
+            description: 'Непредвиденные ошибки сервера'
+            content:
+                application/json:
+                    schema:
+                        $ref: '#/components/schemas/errorModel'
+                    example: { "success": false, "data": null, "errors": [ { "type": "Internal Server Error", "code": 500, "message": "Ошибка базы данных." } ] }
+
+    requestBodies:
+
+        studentRequestBody:
+            description: JSON объект, содержащий информацию о студенте
+            required: true
+            content:
+                application/json:
+                    schema:
+                        properties:
+                                name:
+                                    required: true
+                                    type: string
+                                    example: 'Сергеев Артем'
+                                email:
+                                    required: true
+                                    type: string
+                                    example: 'sergeev.artem2013@gmail.com'
+                                grade_id:
+                                    required: false
+                                    type: integer
+                                    example: 1
+
+
+        lectureRequestBody:
+            description: JSON объект, содержащий информацию о лекции
+            required: true
+            content:
+                application/json:
+                    schema:
+                        properties:
+                            name:
+                                required: true
+                                type: string
+                                example: 'Название лекции'
+                            description:
+                                required: true
+                                type: string
+                                example: 'Описание лекции'
+
+        gradeRequestBody:
+            description: JSON объект, содержащий информацию о классе
+            required: true
+            content:
+                application/json:
+                    schema:
+                        properties:
+                            name:
+                                description: 'Название класса'
+                                type: string
+                                example: 'Класс'
+
+        gradeLectureRequestBody:
+            description: JSON объект, содержащий информацию об учебном плане
+            required: true
+            content:
+                application/json:
+                    schema:
+                        properties:
+                            grade_id:
+                                required: true
+                                type: integer
+                                example: 1
+                            curriculum:
+                                required: true
+                                type: integer
+                                example: 1
+                            gradeLectures:
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/lectureItem'
+
+        gradeLecturesUpdateRequestBody:
+            description: JSON объект, содержащий информацию об учебном плане
+            required: true
+            content:
+                application/json:
+                    schema:
+                        properties:
+                          gradeLectures:
+                            type: array
+                            items:
+                              $ref: '#/components/schemas/lectureItem'
+
+
+    schemas:
+        successModel:
+            type: object
+            description: 'Объект корректного ответа'
+            properties:
+                success:
+                    description: 'Результат выполнения запроса (true)'
+                    type: boolean
+                    example: true
+                data:
+                    description: 'Запрашиваемые данные, при отсутствии данных выводится <b>null</b>'
+                    type: object
+                errors:
+                    description: 'При успешном выполнении запроса приходит пустой массив <b>[]</b>'
+                    type: array
+                    items:
+                        type: string
+                    example: [ ]
+            required:
+                - success
+                - data
+                - errors
+
+        errorModel:
+            type: object
+            description: 'Объект ответа с ошибкой'
+            properties:
+                success:
+                    description: 'Результат выполнения запроса (false)'
+                    type: boolean
+                    example: false
+                data:
+                    description: 'При ошибке приходит <b>null</b>'
+                    type: object
+                    example: null
+                errors:
+                    description: 'Информация об ошибке'
+                    type: array
+                    items:
+                        type: object
+                        properties:
+                            type:
+                                description: 'Тип ошибки'
+                                type: string
+                            code:
+                                description: 'Код ошибки'
+                                type: integer
+                            massage:
+                                description: 'Описание ошибки'
+                                type: string
+            required:
+                - success
+                - data
+                - errors
+
+        studentList:
+            description: 'Данные о студентах'
+            required: [ id, name, email, class ]
+            type: object
+            properties:
+                id:
+                    description: 'Числовой идентификатор'
+                    type: integer
+                    example: 1
+                name:
+                    description: 'Имя'
+                    type: string
+                    example: 'Сергеев Артем'
+                email:
+                    description: 'Электронная почта"'
+                    type: string
+                    example: 'sergeev.artem2013@gmail.com'
+                class:
+                    description: 'Название класса'
+                    type: string
+                    example: 'Математический'
+
+        studentItem:
+            description: 'Данные об одном студенте'
+            required: [ id, name, email, class, lectures ]
+            type: object
+            properties:
+                id:
+                  description: 'Числовой идентификатор'
+                  type: integer
+                  example: 1
+                name:
+                  description: 'Имя'
+                  type: string
+                  example: 'Сергеев Артем'
+                email:
+                  description: 'Электронная почта"'
+                  type: string
+                  example: 'sergeev.artem2013@gmail.com'
+                class:
+                  description: 'Название класса'
+                  type: string
+                  example: 'Математический'
+                lectures:
+                  description: 'Список лекций'
+                  type: array
+                  items:
+                    description: 'Название и описании лекций'
+                    required: [ name, description ]
+                    type: object
+                    properties:
+                      name:
+                        description: 'Название лекции'
+                        type: string
+                        example: "Название лекции"
+                      description:
+                        description: 'Описание лекции'
+                        type: string
+                        example: 'Описание лекции'
+
+        lectureList:
+            description: 'Список лекций'
+            required: [ id, name, description ]
+            type: object
+            properties:
+                id:
+                    description: 'Числовой идентификатор'
+                    type: integer
+                    example: 1
+                name:
+                    description: 'Наименование'
+                    type: string
+                    example: 'Наименование'
+                description:
+                    description: 'Описание'
+                    type: string
+                    example: 'Описание'
+
+        lectureItem:
+          description: 'Одна лекция'
+          required: [ id, name, description, grades ]
+          type: object
+          properties:
+            id:
+              description: 'Числовой идентификатор'
+              type: integer
+              example: 1
+            name:
+              description: 'Наименование'
+              type: string
+              example: 'Наименование'
+            description:
+              description: 'Описание'
+              type: string
+              example: 'Описание'
+            grades:
+              description: 'Список классов со студентами'
+              type: array
+              items:
+                description: 'Название и описании классов и студентов'
+                required: [ name, description ]
+                type: object
+                properties:
+                  name:
+                    description: 'Название класса'
+                    type: string
+                    example: "Название класса"
+                  students:
+                    description: 'Список студентов'
+                    type: array
+                    items:
+                      description: 'Список студентов'
+                      required: [ name, email ]
+                      type: object
+                      properties:
+                        name:
+                          description: 'Имя студента'
+                          type: string
+                          example: "Сергеев Артем"
+                        email:
+                          description: 'Электронная почта студента'
+                          type: string
+                          example: "sergeev.artem2013@gmail.com"
+        gradeList:
+          description: 'Список классов'
+          required: [ id, name]
+          type: object
+          properties:
+            id:
+              description: 'Числовой идентификатор'
+              type: integer
+              example: 1
+            name:
+              description: 'Наименование'
+              type: string
+              example: 'Наименование'
+
+        gradeItem:
+          description: 'Список классов'
+          required: [ id, name ]
+          type: object
+          properties:
+            id:
+              description: 'Числовой идентификатор'
+              type: integer
+              example: 1
+            name:
+              description: 'Наименование'
+              type: string
+              example: 'Наименование'
+            students:
+              description: 'Список студентов'
+              type: array
+              items:
+                description: 'Список студентов'
+                required: [ name, email ]
+                type: object
+                properties:
+                  name:
+                    description: 'Имя студента'
+                    type: string
+                    example: "Сергеев Артем"
+                  email:
+                    description: 'Электронная почта студента'
+                    type: string
+                    example: "sergeev.artem2013@gmail.com"
+
+
+        gradeCurriculumsList:
+            description: 'Список лекций у выбранного класса'
+            required: [ name, gradeLectures ]
+            type: object
+            properties:
+                name:
+                  description: 'Наименование категории продуктов'
+                  type: string
+                  example: 'фрукты'
+                gradeLectures:
+                  description: 'Список лекций'
+                  type: array
+                  items:
+                    description: 'Список лекций'
+                    required: [ lecture_id ]
+                    type: object
+                    properties:
+                      lecture_id:
+                        description: 'Идентификатор лекции'
+                        type: string
+                        example: 1
+
+
+
